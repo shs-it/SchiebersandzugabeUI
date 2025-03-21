@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>de.shsit.stahlwerk.dh.einsatzstoffe</groupId>
-    <artifactId>SchiebersandzugabeUI</artifactId>
+    <artifactId>schiebersandzugabeui</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <name>SchiebersandzugabeUI</name>
