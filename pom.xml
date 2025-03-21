@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>de.dillinger.stw.schnittstellen.pfannenuebersichtpdf</groupId>
+    <groupId>de.shsit.stahlwerk.dh.einsatzstoffe</groupId>
     <artifactId>SchiebersandzugabeUI</artifactId>
     <version>1.0-SNAPSHOT</version>
 
@@ -154,6 +154,13 @@
         </profile>
     </profiles>
 
+    <scm>
+        <connection>scm:git:https://github.com/shs-it/${project.name}.git</connection>
+        <url>https://github.com/shs-it/${project.name}</url>
+        <developerConnection>scm:git:https://github.com/shs-it/${project.name}.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
     <distributionManagement>
         <repository>
             <id>github-shs</id>
@@ -161,5 +168,11 @@
             <url>https://maven.pkg.github.com/shs-it/${project.name}</url>
         </repository>
     </distributionManagement>
+
+    <developers>
+        <developer>
+            <name>TI-HO/STW</name>
+        </developer>
+    </developers>
 
 </project>
