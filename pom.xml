@@ -154,4 +154,12 @@
         </profile>
     </profiles>
 
+    <distributionManagement>
+        <repository>
+            <id>github-shs</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/shs-it/${project.name}</url>
+        </repository>
+    </distributionManagement>
+
 </project>
