@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>de.dillinger.stw.schnittstellen.pfannenuebersichtpdf</groupId>
+    <artifactId>SchiebersandzugabeUI</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <name>SchiebersandzugabeUI</name>
+
+    <properties>
+        <!-- target/compiler configuration  -->
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!--information for filtered sources  -->
+        <build.timestamp>${maven.build.timestamp}</build.timestamp>
+        <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+
+        <!--version of  maven plugins  -->
+        <maven.assembly.plugin>3.7.1</maven.assembly.plugin>
+        <maven.release.plugin>3.1.1</maven.release.plugin>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.4.1</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>dist</directory>
+                            <includes><include>**</include></includes>
+                        </fileset>
+                        <fileset>
+                            <directory>node_modules</directory>
+                            <includes><include>**</include></includes>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <id>1-install</id>
+                        <goals><goal>exec</goal></goals>
+                        <phase>prepare-package</phase>
+                        <configuration>
+                            <executable>npm</executable>
+                            <commandlineArgs>install --no-audit</commandlineArgs>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>2-sync-pom-version</id>
+                        <goals><goal>exec</goal></goals>
+                        <phase>prepare-package</phase>
+                        <configuration>
+                            <executable>npm</executable>
+                            <commandlineArgs>run sync-version</commandlineArgs>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>3-build</id>
+                        <goals><goal>exec</goal></goals>
+                        <phase>prepare-package</phase>
+                        <configuration>
+                            <executable>npm</executable>
+                            <commandlineArgs>run build</commandlineArgs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>4-replace-internal-registry</id>
+                        <phase>prepare-package</phase>
+                        <configuration>
+                            <target>
+                                <!-- s#resolved":\s*\".*/repository/[^/]+/#resolved": "https://registry.npmjs.org/# -->
+                                <replaceregexp
+                                        match='resolved":\s*\".*/repository/[^/]+/'
+                                        replace='resolved": "https://registry.npmjs.org/'
+                                        file="package-lock.json"/>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>${maven.assembly.plugin}</version>
+                <executions>
+                    <execution>
+                        <id>5-assemble-zip</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <descriptors>
+                                <descriptor>maven-assembly.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>${maven.release.plugin}</version>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>dockerDeveloperTags</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <!-- When calling maven release:prepare and release:perform execute only install and NOT deploy.
+                         Deploy publishes the image which should be done by build server only -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-release-plugin</artifactId>
+                        <configuration>
+                            <goals>install</goals>
+                            <autoVersionSubmodules>true</autoVersionSubmodules>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

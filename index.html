@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Schiebersandzugabe</title>
+    <link rel="stylesheet" href="src/view/style.css">
+    <link rel="stylesheet" href="src/view/normalize.css">
+    <!-- ${project.version} -->
+</head>
+<body>
+<script>
+    <!-- Redirect mit Ort als Parameter -->
+    const sPageURL = window.location.search.substring(1);
+    let regExpMatchArray = sPageURL.match("(?:^|&)ort=(KO[12])(?:&|$)"); // davor und dahinter nix oder "&"
+    let ort = regExpMatchArray ? regExpMatchArray[1] : "KO1";
+    console.log("Schiebersandzugabe " + ort + " ${project.version}");
+    window.location.href = "src/components/schiebersandzugabe/view/schiebersandzugabeView.html?ort=" + ort;
+</script>
+</body>
+</html>

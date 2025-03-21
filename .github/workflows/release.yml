@@ -1,0 +1,66 @@
+name: Release
+on:
+  workflow_dispatch:
+    inputs:
+      release_version:
+        description: "Release Version"
+        required: true
+        default: "1.0.0"
+      development_version:
+        description: "Nächste Development Version"
+        required: true
+        default: "1.1.0-SNAPSHOT"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install npm
+        run: npm install
+
+      - name: Setup Maven
+        uses: stCarolas/setup-maven@v.4.5
+        with:
+          maven-version: 3.8.7
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+          server-id: github-shs
+          cache: maven
+
+      # configure git for building a new release
+      - name: Configure Git user
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+
+      - name: Commit package.json with release-Version
+        run: |
+          npm version --allow-same-version=true --git-tag-version=false --workspace-update=false ${{ github.event.inputs.release_version }}
+          git add package.json package-lock.json
+          git commit -m "Bump version to release ${{ github.event.inputs.release_version }}"
+          git push origin HEAD    
+
+      - name: Create new release
+        run: mvn -X -B -P '!dockerDeveloperTags' release:prepare release:perform -Dusername=$GITHUB_ACTOR -Dpassword=$GITHUB_TOKEN -DreleaseVersion=${{ github.event.inputs.release_version }} -DdevelopmentVersion=${{ github.event.inputs.development_version }}
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit package.json with development-Version
+        run: |
+          npm run sync-version
+          git add package.json package-lock.json
+          git commit -m "Bump version to snapshot ${{ github.event.inputs.development_version }}"
+          git push origin HEAD

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pfannenumlauf Planung</title>
+    <link rel="stylesheet" href="../../../view/style.css">
+    <link rel="stylesheet" href="../../../view/normalize.css">
+    <link rel="stylesheet" href="schiebersandzugabeView.css">
+</head>
+<body>
+
+<!--suppress HtmlUnknownTarget -->
+<script type="module" src="../../../../SchiebersandzugabePresenter.js"></script>
+</body>
+
+<div id="kopfdaten">
+    <table id="kopfdatenTabelle" class="kopfdatenTabelle" border="0">
+        <tr>
+            <td></td>
+            <td>Charnr</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>Bestellnummer</td>
+            <td>Qualität</td>
+            <td>Gießart/Seqnr</td>
+            <td>Format</td>
+            <td>T0m</td>
+            <td colspan="2">Chargenbeginn</td>
+        </tr>
+        <tr>
+            <td>
+                <button id="vorherigeChargeLadenBt" title="vorherige Charge">&lt;</button>
+            </td>
+            <td><input type="text" id="chargennummerEingabe" class="chargennummerEingabe"/></td>
+            <td>
+                <button id="naechsteChargeLadenBt" title="nächste Charge">&gt;</button>
+            </td>
+            <td>
+                <button id="aktuelleChargeLadenBt" title="Aktuelle Charge laden">Aktuelle Charge laden</button>
+            </td>
+            <td class="kleinerAbstand"></td>
+            <td><input class="kopfdatenAnzeige" type="text" id="bestellnummerEingabe" class="bestellnummerEingabe" disabled/></td>
+            <td><input class="kopfdatenAnzeige" type="text" id="qualitaetEingabe" class="qualitaetEingabe" disabled/></td>
+            <td><input class="kopfdatenAnzeige" type="text" id="giessartSeqnrEingabe" class="giessartSeqnrEingabe" disabled/></td>
+            <td><input class="kopfdatenAnzeige" type="text" id="formatEingabe" class="formatEingabe" disabled/></td>
+            <td><input class="kopfdatenAnzeige" type="text" id="t0mEingabe" class="t0mEingabe" disabled/></td>
+            <td colspan="2" class="letzteZelle"><input class="kopfdatenAnzeige" type="text" id="chargenbeginnEingabe" class="chargenbeginnEingabe" disabled/></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="linkesLabel">Pfanne</td>
+            <td><input class="kopfdatenAnzeige" type="text" id="pfanneEingabe" class="pfanneEingabe" disabled/></td>
+            <td class="linkesLabel">Zustand</td>
+            <td class="letzteZelle"><input class="kopfdatenAnzeige" type="text" id="zustandEingabe" class="zustandEingabe" disabled/></td>
+        </tr>
+    </table>
+</div>
+
+<div class="zugaben">
+
+    <div class="sollvorgabenAnzeigen">
+        <span class="labelSand1">Sand 1 (links)</span>
+        <span class="labelSand2">Sand 2 (rechts)</span>
+        <span class="labelSollvorgabe">Soll-Vorgabe</span>
+        <input class="textanzeige" type="text" id="sollvorgabeLinks" value="ZrInt 27 kg (2 Sack)" disabled/>
+        <input class="textanzeige" type="text" id="sollvorgabeRechts" value="CrJac 14 kg (2 Sack)" disabled/>
+        <span class="labelLetzteLieferangaben">Letzte Lieferangaben:</span>
+        <input class="textanzeige" type="text" id="lieferangabenLinks" value="31.07.2024 L01834" disabled />
+        <input class="textanzeige" type="text" id="lieferangabenRechts" value="26.06.2023 L01822" disabled />
+        <button id="zugebenWieVorgegebenBt">Zugeben wie vorgegeben</button>
+    </div>
+
+    <div class="istZugabeErfassen">
+        <div class="istZugabeErfassenHeader">Ist-Zugabe je Sack erfassen:</div>
+        <span class="labelHersteller">Hersteller:</span>
+        <select id="sandauswahl" class="col2">
+            <option>CrABT 7 kg</option>
+            <option>ZrJac 13.5 kg</option>
+        </select>
+        <span class="labelLieferangaben">Lieferangaben:</span>
+        <input type="text" id="lieferangabenEingabe" class="col4"/>
+        <button id="uebernehmenBt" title="Übernehmen" class="col5">Übernehmen</button>
+    </div>
+
+    <div class="istZugabe">
+        <table id="istZugabeTabelle">
+            <tr>
+                <td class="labelIstZugaben">Ist-Zugaben:</td>
+                <td><input id="sack1linksEingabe" class="sackAnzeige" disabled/></td>
+                <td><input id="sack1rechtsEingabe" class="sackAnzeige" disabled/></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input id="sack2linksEingabe" class="sackAnzeige" disabled/></td>
+                <td><input id="sack12echtsEingabe" class="sackAnzeige" disabled/></td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div class="buttonsFusszeile">
+    <button id="aktualisierenBt" title="Aktualisieren">Aktualisieren</button>
+    <button id="speicherBt" title="Speichern">Speichern</button>
+    <button id="abbrechenBt" title="Abbrechen">Abbrechen</button>
+</div>
+
+<div class="modal" id="modalFehlerMeldung">
+    <div class="modalFenster" id="modalFensterFehlerMeldung">
+        <div class="modalHeader" id="modalHeaderFehlerMeldung">
+            Es ist ein Fehler aufgetreten :
+        </div>
+        <div class="modalAnzeige" id="modalAnzeige">
+            <!--suppress HtmlFormInputWithoutLabel -->
+            <textarea id="ausgabeFeldFehlerMeldung" readonly></textarea>
+        </div>
+        <div class="modalOptionen" id="modalOptionenFehlermeldung">
+            <button id="bestaetigeFehlerMeldungBt">Bestätigen</button>
+        </div>
+    </div>
+</div>
+
+<!--suppress HtmlUnknownTarget -->
+<script type="module" src="../../../../SchiebersandzugabePresenter.js"></script>
+
+</html>
